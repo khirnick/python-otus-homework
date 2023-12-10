@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from ._parse import LogParser
+from ._parser import LogParser
 from ._path import get_log_path
 from ._stat import UrlsStat
 

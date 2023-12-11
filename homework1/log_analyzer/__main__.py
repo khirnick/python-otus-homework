@@ -14,6 +14,8 @@ CONFIG = {
 
 def main(config: dict) -> None:
     log_path = get_log_path(Path(config['LOG_DIR']))
+    if not log_path:
+        return
     lines = (line for line in LogParser(reader=log_path.open()))
     not_empty_lines = (line for line in lines if line)
     urls_stat = UrlsStat()

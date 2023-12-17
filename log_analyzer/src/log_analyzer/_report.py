@@ -57,12 +57,12 @@ class ReportBuilder:
                 {
                     'url': url,
                     'count': url_stat.entries,
-                    'count_perc': url_stat.entries / urls_stat_entries,
-                    'time_sum': url_stat.sum,
-                    'time_perc': url_stat.sum / urls_stat_sum,
-                    'time_avg': url_stat.average,
-                    'time_max': url_stat.max,
-                    'time_med': url_stat.median,
+                    'count_perc': round(url_stat.entries / urls_stat_entries, 3),
+                    'time_sum': round(url_stat.sum, 3),
+                    'time_perc': round(url_stat.sum / urls_stat_sum, 3),
+                    'time_avg': round(url_stat.average, 3),
+                    'time_max': round(url_stat.max, 3),
+                    'time_med': round(url_stat.median, 3),
                 }
             )
         return report

@@ -6,6 +6,9 @@ pip-delete-this-directory.txt
 .ipynb_checkpoints
 *.egg-info
 .ruff_cache/
+.pytest_cache/
+.coverage
+coverage.xml
 
 .idea/
 .DS_Store

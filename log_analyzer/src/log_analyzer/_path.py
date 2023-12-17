@@ -3,6 +3,7 @@ from datetime import date, datetime
 import gzip
 from pathlib import Path
 import re
+from typing import Iterator
 
 
 @dataclass(frozen=True)
@@ -18,12 +19,7 @@ class LogPath:
 
 
 def get_log_path(log_directory: Path) -> LogPath | None:
-    pattern = re.compile(r'^nginx-access-ui.log-(?P<date>\d+)(?P<extension>.gz)?$')
-    paths = (
-        LogPath(path=path, date=_parse_date(match.groupdict()['date']), extension=match.groupdict()['extension']) 
-        for path in log_directory.iterdir() 
-        if (match := pattern.match(path.name))
-    )
+    paths = _get_log_paths(log_directory)
     fresh = None
     for path in paths:
         if not fresh:
@@ -31,6 +27,15 @@ def get_log_path(log_directory: Path) -> LogPath | None:
         else:
             fresh = path if path.date > fresh.date else fresh
     return fresh
+
+
+def _get_log_paths(log_directory: Path) -> Iterator[LogPath]:
+    pattern = re.compile(r'^nginx-access-ui.log-(?P<date>\d+)(?P<extension>.gz)?$')
+    return (
+        LogPath(path=path, date=_parse_date(match.groupdict()['date']), extension=match.groupdict()['extension']) 
+        for path in log_directory.iterdir() 
+        if (match := pattern.match(path.name))
+    )
 
 
 def _parse_date(date_string: str) -> date:

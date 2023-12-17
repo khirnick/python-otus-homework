@@ -1,9 +1,10 @@
+import gzip
 from log_analyzer._parser import LogParser, LogLine
 
 
-def test_LogParser(logs):
+def test_LogParser(log_directory):
     # arrange
-    parser = LogParser(iter(logs))
+    parser = LogParser(gzip.open(log_directory / 'nginx-access-ui.log-20230101.gz', 'rt'))
 
     # act
     result = list(parser)

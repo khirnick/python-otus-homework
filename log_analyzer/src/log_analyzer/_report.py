@@ -9,8 +9,9 @@ from ._stat import UrlsStat, UrlStat
 
 class ReportBuilder:
 
-    def __init__(self, report_directory: Path, report_date: date) -> None:
+    def __init__(self, report_directory: Path, report_date: date, report_size: int) -> None:
         self._path = report_directory / f'report-{report_date.strftime("%Y.%m.%d")}.html'
+        self._report_size = report_size
 
     @property
     def path(self) -> Path:
@@ -24,13 +25,13 @@ class ReportBuilder:
                 urls_stat[line.url] += line.request_time
         print('Read logs, count: ', urls_stat.entries)
         print('Building report...')
-        report = self._build_from_urls_stat(urls_stat)
+        table_json = self._build_table_json(urls_stat)
         print('Report is built')
         print('Reading template...')
         template = self._read_template()
         print('Template is read')
         print('Substituting variable in template...')
-        template = template.safe_substitute(table_json=report)
+        template = template.safe_substitute(table_json=table_json)
         print('Substituting is succeed')
         print('Saving to report directory...')
         with open(self._path, 'wt') as f:
@@ -45,14 +46,11 @@ class ReportBuilder:
         if self._path.is_file():
             raise FileExistsError(f'Report {self._path} is already exist')
 
-    @staticmethod
-    def _build_from_urls_stat(urls_stat: UrlsStat, report_size: int = 1000) -> list[dict]:
-        # TODO: вынести в отдельный класс
-        # TODO: размер отчета должен приходить извне
+    def _build_table_json(self, urls_stat: UrlsStat) -> list[dict]:
         report = []
         urls_stat_sum = urls_stat.sum
         urls_stat_entries = urls_stat.entries
-        for url, url_stat in sorted(urls_stat.items(), key=lambda s: s[1].sum, reverse=True):
+        for url, url_stat in sorted(urls_stat.items(), key=lambda s: s[1].sum, reverse=True)[0:self._report_size]:
             url_stat: UrlStat
             report.append(
                 {
@@ -67,14 +65,3 @@ class ReportBuilder:
                 }
             )
         return report
-
-
-"""
-count - сĸольĸо раз встречается URL, абсолютное значение
-count_perc - сĸольĸо раз встречается URL, в процентнах относительно общегочисла запросов
-time_sum - суммарный $request_time для данного URL'а, абсолютное значение
-time_perc - суммарный $request_time для данного URL'а, в процентахотносительно общего $request_time всех запросов
-time_avg - средний $request_time для данного URL'а
-time_max - маĸсимальный $request_time для данного URL'а
-time_med - медиана $request_time для данного URL'а
-"""

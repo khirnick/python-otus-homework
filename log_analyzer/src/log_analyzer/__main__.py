@@ -21,8 +21,10 @@ def main(config: dict) -> None:
     print('Initialize ReportBuilder', report_builder)
     log_parser = LogParser(reader=log_path.open())
     print('Got log_parser', log_parser)
-    # TODO: проверять если билд выдает FileExistsError
-    report_builder.build(log_parser)
+    try:
+        report_builder.build(log_parser)
+    except FileExistsError:
+        print(f'Report for date {log_path.date} is already exist')
 
 
 if __name__ == "__main__":

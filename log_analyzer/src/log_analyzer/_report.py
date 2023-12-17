@@ -1,3 +1,4 @@
+from datetime import date
 from pathlib import Path
 from string import Template
 
@@ -8,8 +9,8 @@ from ._stat import UrlsStat, UrlStat
 
 class ReportBuilder:
 
-    def __init__(self, report_directory: Path, report_date: str) -> None:
-        self._path = report_directory / f'report-{report_date}.html'
+    def __init__(self, report_directory: Path, report_date: date) -> None:
+        self._path = report_directory / f'report-{report_date.strftime("%Y.%m.%d")}.html'
 
     @property
     def path(self) -> Path:
@@ -62,7 +63,7 @@ class ReportBuilder:
                     'time_perc': round(url_stat.sum / urls_stat_sum, 3),
                     'time_avg': round(url_stat.average, 3),
                     'time_max': round(url_stat.max, 3),
-                    'time_med': round(url_stat.median, 3),
+                    'time_med': round(url_stat.median, 3)   ,
                 }
             )
         return report

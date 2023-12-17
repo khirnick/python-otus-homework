@@ -22,10 +22,11 @@ def test_ReportBuilder(log_directory, reports_directory, reports_result_director
     builder.path.unlink()
 
 
-def test_ReportBuilder__exceed_unparsed_logs_coef(log_directory, reports_directory):
+def test_ReportBuilder__exceed_unparsed_logs_coef(mocker, log_directory, reports_directory):
     # arrange
     unparsed_logs_coef = 0.1
     builder = ReportBuilder(report_directory=reports_directory, report_date=date(2023, 1, 1), report_size=5, unparsed_logs_coef=unparsed_logs_coef)
+    builder._build_table_json = mocker.Mock()
     builder.path.unlink(missing_ok=True)
     parser = LogParser(gzip.open(Path(log_directory / 'nginx-access-ui.log-20230101.gz'), 'rt'))
 
@@ -33,6 +34,7 @@ def test_ReportBuilder__exceed_unparsed_logs_coef(log_directory, reports_directo
     builder.build(parser)
 
     # assert
+    builder._build_table_json.assert_not_called()
     assert not builder.path.is_file()
 
 

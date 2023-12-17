@@ -23,19 +23,23 @@ class ReportBuilder:
         if self._is_report_exists:
             self._logger.info(f'Report {self._path} is already exist')
             return
-        urls_stat = UrlsStat()
         self._logger.info('Reading logs...')
-        for line in log_parser:
-            if line:
-                urls_stat[line.url] += line.request_time
+        stat = self._read_logs(log_parser)
         self._logger.info('Logs are read')
         self._logger.info('Building report...')
-        table_json = self._build_table_json(urls_stat)
+        table_json = self._build_table_json(stat)
         template = self._read_template()
         template = template.safe_substitute(table_json=table_json)
         with open(self._path, 'wt') as f:
             f.write(template)
         self._logger.info(f'Report is built and saved to: {self.path}')
+    
+    def _read_logs(self, log_parser: LogParser) -> UrlsStat:
+        urls_stat = UrlsStat()
+        for line in log_parser:
+            if line:
+                urls_stat[line.url] += line.request_time
+        return urls_stat
 
     def _read_template(self) -> Template:
         template_data = open(REPORT_TEMPLATE_PATH, 'rt').read()

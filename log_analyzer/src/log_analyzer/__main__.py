@@ -3,6 +3,7 @@ from json import JSONDecodeError
 import logging
 from pathlib import Path
 import sys
+import time
 from types import MappingProxyType
 
 from ._config import Config, get_config
@@ -61,7 +62,9 @@ if __name__ == "__main__":
         sys.exit(1)
     build_logging(path=config.app_logging_path)
     try:
+        start = time.time()
         main(config)
+        logging.getLogger().info(f'Took: {round(time.time() - start, 2)}s')
     except Exception as exception:
         logging.getLogger().exception(exception)
         sys.exit(1)

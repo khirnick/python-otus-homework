@@ -1,4 +1,4 @@
-from dataclasses import InitVar, dataclass, field
+from dataclasses import dataclass
 from datetime import date, datetime
 import gzip
 from pathlib import Path

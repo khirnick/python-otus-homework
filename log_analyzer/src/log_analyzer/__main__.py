@@ -38,7 +38,7 @@ def main(config: Config) -> None:
         sys.exit(1)
     log_path = get_log_path(config.log_directory)
     if not log_path:
-        logger.info(f'No log to analyze')
+        logger.info('No log to analyze')
         return
     logger.info(f'Log to analyze: {log_path.path}')
     report_builder = ReportBuilder(config.report_directory, log_path.date, config.report_size)

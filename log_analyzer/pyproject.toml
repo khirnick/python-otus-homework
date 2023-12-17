@@ -3,6 +3,7 @@ name = "log_analyzer"
 authors = [{name = "Nikita Khirny", email = "khirnick@yandex.ru"}]
 description = "Nginx Log Analyzer"
 version = "0.1.0"
+requires-python = ">= 3.11"
 
 [build-system]
 requires = ["setuptools"]
@@ -10,3 +11,19 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "ruff"
+]
+dev = ["ipython"]
+
+[tool.pytest.ini_options]
+addopts = "--cov-report term-missing --cov-report xml --cov src/"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120

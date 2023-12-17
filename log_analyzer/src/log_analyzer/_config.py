@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import json
 from pathlib import Path
-from types import MappingProxyType
 from typing import Self
 
 

@@ -11,6 +11,7 @@ class Config:
     report_size: int
     report_directory: Path
     log_directory: Path
+    app_logging_path: Path | None = None
 
     @classmethod
     def from_dict(cls, dict_: dict) -> Self:
@@ -18,15 +19,14 @@ class Config:
             report_size=dict_['REPORT_SIZE'],
             report_directory=Path(dict_['REPORT_DIR']),
             log_directory=Path(dict_['LOG_DIR']),
+            app_logging_path=Path(dict_['APP_LOGGING_PATH']) if 'APP_LOGGING_PATH' in dict_ else None,
         )
 
 
-def get_config(default_config: dict, custom_config: Path | None) -> Config:
-    if custom_config and not custom_config.is_file():
-        raise FileNotFoundError
+def get_config(default_config: dict, custom_config_path: Path | None) -> Config:
     result = {}
     result.update(default_config)
-    if custom_config:
-        content = json.load(custom_config.open())
+    if custom_config_path:
+        content = json.load(custom_config_path.open())
         result.update(content)
     return Config.from_dict(result)

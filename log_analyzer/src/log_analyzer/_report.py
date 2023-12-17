@@ -1,4 +1,5 @@
 from datetime import date
+import logging
 from pathlib import Path
 from string import Template
 
@@ -12,39 +13,37 @@ class ReportBuilder:
     def __init__(self, report_directory: Path, report_date: date, report_size: int) -> None:
         self._path = report_directory / f'report-{report_date.strftime("%Y.%m.%d")}.html'
         self._report_size = report_size
+        self._logger = logging.getLogger()
 
     @property
     def path(self) -> Path:
         return self._path
     
     def build(self, log_parser: LogParser) -> str:
-        self._check_existing_template()
+        if self._is_report_exists:
+            self._logger.info(f'Report {self._path} is already exist')
+            return
         urls_stat = UrlsStat()
+        self._logger.info('Reading logs...')
         for line in log_parser:
             if line:
                 urls_stat[line.url] += line.request_time
-        print('Read logs, count: ', urls_stat.entries)
-        print('Building report...')
+        self._logger.info('Logs are read')
+        self._logger.info('Building report...')
         table_json = self._build_table_json(urls_stat)
-        print('Report is built')
-        print('Reading template...')
         template = self._read_template()
-        print('Template is read')
-        print('Substituting variable in template...')
         template = template.safe_substitute(table_json=table_json)
-        print('Substituting is succeed')
-        print('Saving to report directory...')
         with open(self._path, 'wt') as f:
             f.write(template)
-        print('Saved!')
+        self._logger.info(f'Report is built and saved to: {self.path}')
 
     def _read_template(self) -> Template:
         template_data = open(REPORT_TEMPLATE_PATH, 'rt').read()
         return Template(template_data)
 
-    def _check_existing_template(self) -> None:
-        if self._path.is_file():
-            raise FileExistsError(f'Report {self._path} is already exist')
+    @property
+    def _is_report_exists(self) -> bool:
+        return self.path.is_file()
 
     def _build_table_json(self, urls_stat: UrlsStat) -> list[dict]:
         report = []

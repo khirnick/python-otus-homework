@@ -1,10 +1,8 @@
 # Log Analyzer
-
 Анализирует логи Nginx и собирает отчет со статистикой по URL.
 
 ### Установка
 *Для корректной работы необходимо использовать Python `>= 3.11`*
-
 Перейти в каталог с проектом и установить пакет:
 ```bash
 $ cd log_analyzer/ && pip install .
@@ -14,14 +12,13 @@ $ cd log_analyzer/ && pip install .
 ```bash
 $ python -m log_analyzer --config path/to/config.json
 ```
-
 Команда принимает опциональный аргумент `--config`, в котром указывается путь до пользовательской конфигурации. Конфигурация в файле должна быть в формате json.
 ```json
 {
-    "REPORT_SIZE": 1000,        // максимальный размер отчета
+    "REPORT_SIZE": 1000,  // максимальный размер отчета
     "REPORT_DIR": "./reports",  // путь до папки с отчетами
-    "LOG_DIR": "./log",         // путь до папки с логами nginx
-    "APP_LOGGING_PATH": null    // путь, куда приложение будет писать логи. Если null или не указано, то логи пишутся в stdout
+    "LOG_DIR": "./log",  // путь до папки с логами nginx
+    "APP_LOGGING_PATH": null  // путь, куда приложение будет писать логи. Если null или не указано, то логи пишутся в stdout
 }
 ```
 
@@ -30,7 +27,6 @@ $ python -m log_analyzer --config path/to/config.json
 ```bash
 $ pip install -e ".[test]"
 ```
-
 И запустить тесты
 ```bash
 $ pytest tests/

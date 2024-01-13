@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install ruff pytest
+        pip install .[test]
     - name: Lint with ruff
       run: |
         cd log_analyzer/

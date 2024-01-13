@@ -6,11 +6,10 @@ import json
 import logging
 import uuid
 
-from constants import ERRORS, INTERNAL_ERROR
-from scoring import get_interests, get_score
-from auth import check_auth
-
-from data import ClientsInterestsData, MethodData, OnlineScoreData
+from .constants import ERRORS, INTERNAL_ERROR
+from .scoring import get_interests, get_score
+from .auth import check_auth
+from .data import ClientsInterestsData, MethodData, OnlineScoreData
 
 
 def method_handler(request: dict, context: dict, store: None) -> tuple[dict | str, int]:

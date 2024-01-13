@@ -1,7 +1,10 @@
 import datetime
 import hashlib
 
-from constants import ADMIN_SALT, SALT
+from .constants import (
+    ADMIN_SALT,
+    SALT,
+)
 
 
 def check_auth(request):

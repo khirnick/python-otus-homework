@@ -6,11 +6,11 @@ import sys
 import time
 from types import MappingProxyType
 
-from ._config import Config, get_config
-from ._logger import build_logging
-from ._parser import LogParser
-from ._path import get_log_path
-from ._report import ReportBuilder
+from .config import Config, get_config
+from .logger import build_logging
+from .parser import LogParser
+from .path import get_log_path
+from .report import ReportBuilder
 
 
 DEFAULT_CONFIG = MappingProxyType({

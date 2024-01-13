@@ -3,9 +3,9 @@ import logging
 from pathlib import Path
 from string import Template
 
-from ._constants import REPORT_TEMPLATE_PATH
-from ._parser import LogParser
-from ._stat import UrlsStat, UrlStat
+from .constants import REPORT_TEMPLATE_PATH
+from .parser import LogParser
+from .stat import UrlsStat, UrlStat
 
 
 class ReportBuilder:

@@ -8,6 +8,10 @@ on:
     branches: [ "master" ]
     paths: [ "log_analyzer/**" ]
 
+defaults:
+  run:
+    working-directory: ./log_analyzer
+
 permissions:
   contents: read
 
@@ -28,9 +32,7 @@ jobs:
         pip install .[test]
     - name: Lint with ruff
       run: |
-        cd log_analyzer/
         ruff src/
     - name: Test with pytest
       run: |
-        cd log_analyzer/
         pytest

@@ -1,4 +1,5 @@
 from curses import OK
+from http import HTTPStatus
 from http.client import BAD_REQUEST, NOT_FOUND
 from http.server import BaseHTTPRequestHandler
 import json 
@@ -6,36 +7,37 @@ import logging
 import uuid
 
 from constants import ERRORS, INTERNAL_ERROR
-from requests import MethodRequest, OnlineScoreRequest
 from scoring import get_interests, get_score
 from auth import check_auth
-from requests import ClientsInterestsRequest
+
+from data import ClientsInterestsData, MethodData, OnlineScoreData
 
 
-def method_handler(request, ctx, store):
-    body = request['body']
-    method_request = MethodRequest(**body)
-    #if not check_auth(method_request):
-    #    return "Forbidden", 403
-    if method_request.is_admin:
-        response, code = {'score': 42}, 200
-    if method_request.method == 'online_score':
-        r = OnlineScoreRequest(**method_request.arguments)
+def method_handler(request: dict, context: dict, store: None) -> tuple[dict | str, int]:
+    _ = store
+    method_data = MethodData(**request['body'])
+    # if not check_auth(method_data):
+    #     return 'Forbidden', HTTPStatus.FORBIDDEN
+    if method_data.is_admin:
+        return {'score': 42}, HTTPStatus.OK
+    if method_data.method == 'online_score':
         try:
-            score = get_score(r.phone, r.email, r.birthday, r.gender, r.first_name, r.last_name)
-        except ValueError as e:
-            response, code = {'error': str(e)}, 422
-        response, code = {'score': score}, 200
-    elif method_request.method == 'clients_interests':
-        r = ClientsInterestsRequest(**method_request.arguments)
-        interests = {}
+            data = OnlineScoreData(**method_data.arguments)
+        except ValueError as exception:
+            return str(exception), HTTPStatus.UNPROCESSABLE_ENTITY
+        score = get_score(data.phone, data.email, data.birthday, data.gender, data.first_name, data.last_name)
+        context['has'] = data.has
+        return {'score': score}, HTTPStatus.OK
+    elif method_data.method == 'clients_interests':
         try:
-            for client_id in r.client_ids:
-                interests[client_id] = get_interests()
-        except ValueError as e:
-            response, code = {'error': str(e)}, 422
-        response, code = interests, 200
-    return response, code
+            data = ClientsInterestsData(**method_data.arguments)
+        except ValueError as exception:
+            return str(exception), HTTPStatus.UNPROCESSABLE_ENTITY
+        interests = {client_id: get_interests() for client_id in data.client_ids}
+        context['nclients'] = data.clients
+        return interests, HTTPStatus.OK
+    else:
+        return f'Method {method_data.method} not found', HTTPStatus.NOT_FOUND
 
 
 class MainHTTPHandler(BaseHTTPRequestHandler):

@@ -1,5 +1,5 @@
 import gzip
-from log_analyzer._parser import LogParser, LogLine
+from log_analyzer.parser import LogParser, LogLine
 
 
 def test_LogParser(log_directory):

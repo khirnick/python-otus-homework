@@ -1,5 +1,5 @@
 from datetime import date
-from log_analyzer._path import get_log_path, LogPath, _get_log_paths
+from log_analyzer.path import get_log_path, LogPath, _get_log_paths
 
 
 def test_get_log_path(log_directory):

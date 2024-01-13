@@ -7,7 +7,7 @@ DATE_FORMAT = '%Y.%m.%d %H:%M:%S'
 LEVEL = logging.INFO
 
 
-def build_logging(path: Path | None) -> logging.Logger:
+def build_logging(path: Path | None = None) -> logging.Logger:
     logging.basicConfig(
         format=FORMAT,
         datefmt=DATE_FORMAT,

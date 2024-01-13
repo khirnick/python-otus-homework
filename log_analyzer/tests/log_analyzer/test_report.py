@@ -1,8 +1,8 @@
 from datetime import date
 import gzip
 from pathlib import Path
-from log_analyzer._parser import LogParser
-from log_analyzer._report import ReportBuilder
+from log_analyzer.parser import LogParser
+from log_analyzer.report import ReportBuilder
 
 
 def test_ReportBuilder(log_directory, reports_directory, reports_result_directory):

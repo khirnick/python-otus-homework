@@ -34,7 +34,7 @@ def main(config: Config) -> None:
     if not log_path:
         logger.info('No log to analyze')
         return
-    logger.info(f'Log to analyze: {log_path.path}')
+    logger.info(f'Log to analyze {log_path.path}')
     report_builder = ReportBuilder(config.report_directory, log_path.date, config.report_size)
     log_parser = LogParser(reader=log_path.open())
     report_builder.build(log_parser)

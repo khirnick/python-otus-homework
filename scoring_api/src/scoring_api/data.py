@@ -22,13 +22,17 @@ class DataMeta(type):
     
     def __call__(cls, *args, **kwargs) -> Any:
         instance = super().__call__(*args, **kwargs)
+        set_fields_names = []
         for name, value in kwargs.items():
             if name in cls._fields:
                 setattr(instance, name, value)
-        for field in cls._fields.values():
-            field.validate(instance)
+                set_fields_names.append(name)
+        not_set_fields = (field for name, field in cls._fields.items() if name not in set_fields_names)
+        for field in not_set_fields:
+            field.validate()
         if hasattr(cls, 'validate'):
-            instance.validate()
+            if not instance.validate():
+                raise ValueError
         return instance
 
     @staticmethod

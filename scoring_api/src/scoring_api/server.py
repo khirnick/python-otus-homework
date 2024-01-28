@@ -6,17 +6,18 @@ import json
 import logging
 import uuid
 
+from scoring_api.store import Store
+
 from .constants import ERRORS, INTERNAL_ERROR
 from .scoring import get_interests, get_score
 from .auth import check_auth
 from .data import ClientsInterestsData, MethodData, OnlineScoreData
 
 
-def method_handler(request: dict, context: dict, store: None) -> tuple[dict | str, int]:
-    _ = store
+def method_handler(request: dict, context: dict, store) -> tuple[dict | str, int]:
     method_data = MethodData(**request['body'])
-    # if not check_auth(method_data):
-    #     return 'Forbidden', HTTPStatus.FORBIDDEN
+    if not check_auth(method_data):
+        return 'Forbidden', HTTPStatus.FORBIDDEN
     if method_data.is_admin:
         return {'score': 42}, HTTPStatus.OK
     if method_data.method == 'online_score':
@@ -24,7 +25,7 @@ def method_handler(request: dict, context: dict, store: None) -> tuple[dict | st
             data = OnlineScoreData(**method_data.arguments)
         except ValueError as exception:
             return str(exception), HTTPStatus.UNPROCESSABLE_ENTITY
-        score = get_score(data.phone, data.email, data.birthday, data.gender, data.first_name, data.last_name)
+        score = get_score(store, data.phone, data.email, data.birthday, data.gender, data.first_name, data.last_name)
         context['has'] = data.has
         return {'score': score}, HTTPStatus.OK
     elif method_data.method == 'clients_interests':
@@ -32,7 +33,7 @@ def method_handler(request: dict, context: dict, store: None) -> tuple[dict | st
             data = ClientsInterestsData(**method_data.arguments)
         except ValueError as exception:
             return str(exception), HTTPStatus.UNPROCESSABLE_ENTITY
-        interests = {client_id: get_interests() for client_id in data.client_ids}
+        interests = {client_id: get_interests(client_id, store) for client_id in data.client_ids}
         context['nclients'] = data.clients
         return interests, HTTPStatus.OK
     else:
@@ -44,7 +45,6 @@ class MainHTTPHandler(BaseHTTPRequestHandler):
     router = {
         "method": method_handler
     }
-    store = None
 
     def get_request_id(self, headers):
         return headers.get('HTTP_X_REQUEST_ID', uuid.uuid4().hex)

@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: types_challanger typing
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: [ "types_challanger/**" ]
+
+defaults:
+  run:
+    working-directory: ./types_challanger
+
+permissions:
+  contents: read
+
+jobs:
+  types-challenger-typing:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install mypy pyright
+    - name: Mypy
+      run: |
+        mypy src/
+    - name: Pyright
+      run: |
+        pyright src/

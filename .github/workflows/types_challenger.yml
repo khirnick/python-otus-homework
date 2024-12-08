@@ -6,7 +6,7 @@ name: types_challanger typing
 on:
   push:
     branches: [ "master" ]
-    paths: [ "types_challanger/**" ]
+    paths: [ "types_challenger/**" ]
 
 defaults:
   run:

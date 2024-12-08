@@ -10,7 +10,7 @@ on:
 
 defaults:
   run:
-    working-directory: ./types_challanger
+    working-directory: ./types_challenger
 
 permissions:
   contents: read

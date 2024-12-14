@@ -1,0 +1,23 @@
+[project]
+name = "ml_model_serving"
+authors = [{name = "Nikita Khirny", email = "khirnick@yandex.ru"}]
+description = "ML Model Serving"
+version = "0.1.0"
+requires-python = ">= 3.13"
+dependencies = [
+    "fastapi[standard]"
+]
+
+[project.optional-dependencies]
+test = [
+    "pylint",
+    "ruff"
+]
+dev = ["ipython"]
+
+[tool.pytest.ini_options]
+addopts = "--cov-report term-missing --cov-report xml --cov src/"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
